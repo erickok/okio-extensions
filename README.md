@@ -16,6 +16,19 @@ Stream [Base64](http://www.ietf.org/rfc/rfc2045.txt)-encoded bytes using Okio's 
     assertThat(decodedString).isEqualTo("okio oh my¿¡")
 ```
 
+```kotlin
+    val utf8Sink = Buffer().writeUtf8("okio oh my¿¡")
+
+    val base64Buffer = Buffer()
+    val base64Sink = Base64Sink(base64Buffer)
+
+    base64Sink.write(utf8Sink, Long.MAX_VALUE)
+
+    assertThat(base64Buffer.readUtf8()).isEqualTo("b2tpbyBvaCBtecK/wqE=")
+```
+
+`Base64Source` supports partial and chunked reading, such as for decoding http chunked transfer mode responses in memory-efficient manner.
+
 Think Apache Commons' [Base64InputStream and Base64OutputStream](https://commons.apache.org/proper/commons-codec/apidocs/org/apache/commons/codec/binary/package-summary.html) but for Okio `Source`s and `Sink`s.
 
 ## `CipherSource` and `CipherSink`
@@ -25,11 +38,24 @@ Encrypt and decrypt data in a streaming fashion using the Java platform's [Ciphe
 ```kotlin
     val cipheredSource = ...
 
-    val decodedSource = CipherSource(cipheredSource, decodeCipher)
+    val decodedSource = CipherSource(cipheredSource, decryptCipher)
 
     val output = Buffer().also { it.writeAll(decodedSource) }
     assertThat(output.readUtf8()).isEqualTo("okio oh my¿¡")
 ```
+
+```kotlin
+    val cipheredBuffer = Buffer()
+    val cipheredSink = CipherSink(cipheredBuffer, encryptCipher)
+
+    val utf8Sink = Buffer().writeUtf8("okio oh my¿¡")
+    cipheredSink.write(utf8Sink, Long.MAX_VALUE)
+
+    val deciphered = decodeCipher.doFinal(cipheredBuffer.readByteArray())
+    assertThat(String(deciphered)).isEqualTo("okio oh my¿¡")
+```
+
+`CipherSource` supports chunked deciphering, such as for decrypting http chunked transfer mode responses on the fly.
 
 Think javax.crypto's standard [CipherInputStream and CipherOutputStream](https://docs.oracle.com/javase/7/docs/api/javax/crypto/package-summary.html) but for Okio `Source`s and `Sink`s.
 
