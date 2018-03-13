@@ -1,6 +1,20 @@
 # okio-extensions
 A set of Okio extensions to work with various data formats.
 
+```groovy
+    allprojects {
+        repositories {
+            ...
+            maven { url 'https://jitpack.io' }
+        }
+    }
+    
+    dependencies {
+            compile 'com.github.erickok:okio-extensions:v1.0'
+    }
+
+```
+
 Written in Kotlin, works on plain Java (JVM) and Android.
 
 ## `Base64Source` and `Base64Sink`
@@ -58,6 +72,8 @@ Encrypt and decrypt data in a streaming fashion using the Java platform's [Ciphe
 `CipherSource` supports chunked deciphering, such as for decrypting http chunked transfer mode responses on the fly.
 
 Think javax.crypto's standard [CipherInputStream and CipherOutputStream](https://docs.oracle.com/javase/7/docs/api/javax/crypto/package-summary.html) but for Okio `Source`s and `Sink`s.
+
+`CipherSource` and `CipherSink` are tested and used in production with AES ciphers, but should work (without warrenty) with any Java-supported Cipher algorithm.
 
 ## License and credits
 Designed and developed by [Eric Kok](mailto:eric@2312.nl) of [2312 development](http://2312.nl).
