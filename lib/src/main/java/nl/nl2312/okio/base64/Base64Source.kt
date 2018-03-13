@@ -7,6 +7,10 @@ import okio.Source
 
 /**
  * Accepts any Base64-encoded data [Source] and decodes it on the fly.
+ *
+ * <p>Chunked and partial reading is supported. Requests for a specific number of bytes are honored (until the source
+ * is drained). Due to the nature of Base64 encoding, this means that for every 3 requested bytes, 4 bytes are read from
+ * the source.
  */
 class Base64Source(source: Source) : ForwardingSource(source) {
 

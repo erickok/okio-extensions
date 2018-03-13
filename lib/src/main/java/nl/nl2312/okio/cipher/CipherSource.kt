@@ -7,6 +7,9 @@ import javax.crypto.Cipher
 
 /**
  * Accepts an encrypted [Source] and deciphers it on the fly.
+ *
+ * <p>Chunked and partial reading is supported. However, the deciphered output text is not complete until the [Source]
+ * is drained. Do not attempt to (re-)use the supplied [cipher] until the full source stream is completed.
  */
 class CipherSource(
         source: Source,
