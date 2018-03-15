@@ -43,7 +43,10 @@ class CipherSource(
         }
         if (streamEnd) {
             // Finalize (with padding) if we are at the end
-            decipheredBuffer.write(cipher.doFinal())
+            val remainder = cipher.doFinal()
+            if (remainder != null) {
+                decipheredBuffer.write(remainder)
+            }
         }
 
         // Sink the requested number of bytes (or all that were still in the source)

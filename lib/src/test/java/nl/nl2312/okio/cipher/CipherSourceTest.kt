@@ -36,6 +36,16 @@ class CipherSourceTest {
     }
 
     @Test
+    fun read_emptySource() {
+        val cipheredSource = Buffer()//.write(byteArrayOf())
+
+        val decoded = CipherSource(cipheredSource, decodeCipher)
+
+        val output = Buffer().also { it.writeAll(decoded) }
+        assertThat(output.readUtf8()).isEqualTo("")
+    }
+
+    @Test
     fun read_cipheredArray_oneBlock() {
         // NOTE Input is shorter than 1 cipher block of 16 bytes
         val ciphered = encodeCipher.doFinal("okio oh my¿¡".toByteArray())
