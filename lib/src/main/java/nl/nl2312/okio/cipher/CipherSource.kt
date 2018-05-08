@@ -53,8 +53,8 @@ class CipherSource(
         val bytesToReturn = bytesRequested.coerceAtMost(decipheredBuffer.size())
         sink.write(decipheredBuffer, bytesToReturn)
 
-        // Return number of written deciphered bytes, or -1 if the source stream is exhausted
-        return if (streamEnd) -1 else bytesToReturn
+        // Return number of written deciphered bytes, or -1 if the source stream is exhausted and our buffer is empty
+        return if (streamEnd && decipheredBuffer.size() == 0L) -1 else bytesToReturn
     }
 
 }

@@ -70,7 +70,7 @@ class CipherSourceTest {
     }
 
     @Test
-    fun read_cipheredChunked() {
+    fun read_cipheredChunked_exactCharacters() {
         val ciphered = encodeCipher.doFinal("okio oh my¿¡ okio oh my¿¡ okio oh my¿¡".toByteArray())
         val cipheredSource = Buffer().write(ciphered)
 
@@ -86,6 +86,22 @@ class CipherSourceTest {
         // Another 100 (but there are only 2 remaining)
         decoded.read(output, 100)
         assertThat(output.readUtf8()).isEqualTo("okio oh my¿¡ okio oh my¿¡")
+    }
+
+    @Test
+    fun read_cipheredChunked_untilStreamEnd() {
+        val ciphered = encodeCipher.doFinal("okio oh my¿¡ okio oh my¿¡ okio oh my¿¡".toByteArray())
+        val cipheredSource = Buffer().write(ciphered)
+
+        val decoded = CipherSource(cipheredSource, decodeCipher)
+
+        // Request 5 bytes until the stream claims to be empty
+        val output = Buffer()
+        var readBytesCount = Long.MAX_VALUE
+        while (readBytesCount > 0) {
+            readBytesCount = decoded.read(output, 5)
+        }
+        assertThat(output.readUtf8()).isEqualTo("okio oh my¿¡ okio oh my¿¡ okio oh my¿¡")
     }
 
     @Test
