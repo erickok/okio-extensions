@@ -2,16 +2,14 @@ package nl.nl2312.okio.cipher
 
 import com.google.common.truth.Truth.assertThat
 import nl.nl2312.okio.base64.Base64Source
-import okio.Buffer
-import okio.ByteString
-import okio.Okio
-import okio.Source
+import okio.*
+import okio.ByteString.Companion.encodeUtf8
+import okio.ByteString.Companion.toByteString
 import org.junit.Test
 import java.security.SecureRandom
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
-
 
 class CipherSourceTest {
 
@@ -115,7 +113,7 @@ class CipherSourceTest {
 
         // Okio's RealBufferedSource.read(Buffer, Long) will only write to the given buffer when the
         // CipherSource.read(Buffer, Long) returns a non-negative byes read could
-        val buffer = Okio.buffer(decoded as Source)
+        val buffer = (decoded as Source).buffer()
         val output = Buffer()
         buffer.read(output, 8192)
         assertThat(output.readUtf8()).isEqualTo("okio oh my¿¡ okio oh my¿¡ okio oh my¿¡")
@@ -124,7 +122,7 @@ class CipherSourceTest {
     @Test
     fun read_base64Wrapped() {
         val ciphered = encodeCipher.doFinal("okio oh my¿¡".toByteArray())
-        val base64 = ByteString.encodeUtf8(ByteString.of(ciphered, 0, ciphered.size).base64())
+        val base64 = ciphered.toByteString(0, ciphered.size).base64().encodeUtf8()
         val base64Source = Buffer().write(base64)
 
         val decoded = CipherSource(Base64Source(base64Source), decodeCipher)

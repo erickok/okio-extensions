@@ -14,7 +14,7 @@ class Base64Sink(delegate: Sink) : ForwardingSink(delegate) {
 
     override fun write(source: Buffer, byteCount: Long) {
         // Read the requested number of bytes (or all available) from source
-        val bytesToRead = byteCount.coerceAtMost(source.size())
+        val bytesToRead = byteCount.coerceAtMost(source.size)
         val decoded = source.readByteString(bytesToRead)
 
         // Base64-encode
@@ -22,7 +22,7 @@ class Base64Sink(delegate: Sink) : ForwardingSink(delegate) {
 
         val encodedSink = Buffer()
         encodedSink.writeUtf8(encoded)
-        super.write(encodedSink, encodedSink.size())
+        super.write(encodedSink, encodedSink.size)
     }
 
 }

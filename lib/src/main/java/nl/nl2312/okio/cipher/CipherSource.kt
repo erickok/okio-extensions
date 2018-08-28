@@ -5,7 +5,6 @@ import okio.ForwardingSource
 import okio.Source
 import javax.crypto.Cipher
 
-
 /**
  * Accepts an encrypted [Source] and deciphers it on the fly.
  *
@@ -28,8 +27,8 @@ class CipherSource(
         if (bytesToRead < 0) throw IllegalArgumentException("bytesRequested > max allowed")
 
         var streamEnd = false
-        while (sourceBuffer.size() < bytesToRead && !streamEnd) {
-            val bytesRead = super.read(sourceBuffer, bytesToRead - sourceBuffer.size())
+        while (sourceBuffer.size < bytesToRead && !streamEnd) {
+            val bytesRead = super.read(sourceBuffer, bytesToRead - sourceBuffer.size)
             if (bytesRead < 0) {
                 streamEnd = true
             }
@@ -50,7 +49,7 @@ class CipherSource(
         }
 
         // Sink the requested number of bytes (or all that were still in the source)
-        val bytesToReturn = bytesRequested.coerceAtMost(decipheredBuffer.size())
+        val bytesToReturn = bytesRequested.coerceAtMost(decipheredBuffer.size)
         sink.write(decipheredBuffer, bytesToReturn)
 
         // Return number of written deciphered bytes, or -1 if there is nothing more to decipher

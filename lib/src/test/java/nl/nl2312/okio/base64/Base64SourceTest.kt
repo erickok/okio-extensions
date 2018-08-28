@@ -2,7 +2,7 @@ package nl.nl2312.okio.base64
 
 import com.google.common.truth.Truth.assertThat
 import okio.Buffer
-import okio.ByteString
+import okio.ByteString.Companion.toByteString
 import org.junit.Test
 import java.util.*
 
@@ -24,7 +24,7 @@ class Base64SourceTest {
         // Generate a very long random string
         val randomLongByteArray =
                 Random().let { random -> (0..10_000).map { (random.nextInt()).toByte() } }.toByteArray()
-        val randomLongBase64 = ByteString.of(randomLongByteArray, 0, randomLongByteArray.size)
+        val randomLongBase64 = randomLongByteArray.toByteString(0, randomLongByteArray.size)
         val randomLongSource = Buffer().also { it.writeUtf8(randomLongBase64.base64()) }
 
         val decoded = Base64Source(randomLongSource)

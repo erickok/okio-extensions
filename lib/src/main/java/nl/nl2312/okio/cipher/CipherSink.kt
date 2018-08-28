@@ -17,7 +17,7 @@ class CipherSink(
 
     override fun write(source: Buffer, byteCount: Long) {
         // Read the requested number of bytes (or all available) from source
-        val bytesToRead = byteCount.coerceAtMost(source.size())
+        val bytesToRead = byteCount.coerceAtMost(source.size)
         val decrypted = source.readByteArray(bytesToRead)
 
         // Encrypt
@@ -25,7 +25,7 @@ class CipherSink(
 
         val encryptedSink = Buffer()
         encryptedSink.write(encrypted)
-        super.write(encryptedSink, encryptedSink.size())
+        super.write(encryptedSink, encryptedSink.size)
     }
 
 }

@@ -2,6 +2,7 @@ package nl.nl2312.okio.base64
 
 import okio.Buffer
 import okio.ByteString
+import okio.ByteString.Companion.decodeBase64
 import okio.ForwardingSource
 import okio.Source
 
@@ -21,27 +22,27 @@ class Base64Source(source: Source) : ForwardingSource(source) {
         if (bytesRequested >= MAX_REQUEST_LENGTH) throw IllegalArgumentException("bytesRequested > max allowed")
 
         // If we have the requested bytes already buffered, return directly
-        if (decodeBuffer.size() >= bytesRequested) {
+        if (decodeBuffer.size >= bytesRequested) {
             sink.write(decodeBuffer, bytesRequested)
             return bytesRequested
         }
 
         var streamEnded = false
-        while (decodeBuffer.size() < bytesRequested && !streamEnded) {
+        while (decodeBuffer.size < bytesRequested && !streamEnded) {
             val bytesRead = super.read(sourceBuffer, bytesRequested)
             if (bytesRead < 0) {
                 streamEnded = true
             }
 
             // Decode all available blocks
-            val allFullBlocks = BASE64_BLOCK * (sourceBuffer.size() / BASE64_BLOCK)
-            val decoded: ByteString? = ByteString.decodeBase64(sourceBuffer.readUtf8(allFullBlocks))
+            val allFullBlocks = BASE64_BLOCK * (sourceBuffer.size / BASE64_BLOCK)
+            val decoded: ByteString? = sourceBuffer.readUtf8(allFullBlocks).decodeBase64()
             if (decoded == null) throw IllegalStateException("base64 decode failed")
             decodeBuffer.write(decoded)
         }
 
         // Return the requested number of bytes (or all that were available)
-        val bytesToReturn = bytesRequested.coerceAtMost(decodeBuffer.size())
+        val bytesToReturn = bytesRequested.coerceAtMost(decodeBuffer.size)
         sink.write(decodeBuffer, bytesToReturn)
 
         return if (streamEnded) -1 else bytesToReturn

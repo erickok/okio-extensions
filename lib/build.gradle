@@ -2,7 +2,7 @@ group 'nl.nl2312'
 version '1.0'
 
 buildscript {
-    ext.kotlin_version = '1.2.30'
+    ext.kotlin_version = '1.2.61'
 
     repositories {
         mavenCentral()
@@ -20,7 +20,7 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'com.squareup.okio:okio:1.14.0'
+    compile 'com.squareup.okio:okio:2.0.0'
 
     testCompile 'junit:junit:4.12'
     testCompile 'com.google.truth:truth:0.39'
