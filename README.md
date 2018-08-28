@@ -10,7 +10,7 @@ A set of Okio extensions to work with various data formats.
     }
     
     dependencies {
-            compile 'com.github.erickok:okio-extensions:v1.1'
+            compile 'com.github.erickok:okio-extensions:v2.0'
     }
 
 ```
